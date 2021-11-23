@@ -1,7 +1,18 @@
+/*
+ * 
+ */
 package com.github.theprez.jcmdutils;
 
+/**
+ * Simple implementation of a Java {@link #main(String[])} that does a small sanity check of this library
+ */
 public class SanityCheck {
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     */
     public static void main(final String[] args) {
         final AppLogger logger = AppLogger.getSingleton(true);
         try {
