@@ -104,7 +104,7 @@ public class StringUtils {
     }
 
     /**
-     * Surround the given string with terminal color codes, if supported. Can be disabled by setting the {@value #PROP_DISABLE_COLORS} system property to <tt>true</tt>
+     * Surround the given string with terminal color codes, if supported. Can be disabled by setting the {@value #PROP_DISABLE_COLORS} system property to <code>true</code>
      *
      * @param _str
      *            the str

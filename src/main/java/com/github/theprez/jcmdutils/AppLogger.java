@@ -36,7 +36,7 @@ public abstract class AppLogger {
         private final boolean m_verbose;
 
         /**
-         * Instantiates an instance that will simply write output to <tt>System.out</tt> and <tt>System.err</tt>
+         * Instantiates an instance that will simply write output to <code>System.out</code> and <code>System.err</code>
          *
          * @param _verbose
          *            the verbose
@@ -196,11 +196,11 @@ public abstract class AppLogger {
     private static DefaultLogger s_singleton;
 
     /**
-     * Gets a global, singleton instance of {@link AppLogger}. The <tt>_verbose</tt> parameter
+     * Gets a global, singleton instance of {@link AppLogger}. The <code>_verbose</code> parameter
      * identifies whether the logger is in verbose mode.
      * <br><b>IMPORTANT NOTE:</b>
      * There is only ever one singleton object returned by this method. The determination of
-     * whether that logger is in verbose mode or not depends on the value of <tt>_verbose</tt>
+     * whether that logger is in verbose mode or not depends on the value of <code>_verbose</code>
      * on the very first invocation of this method.
      *
      * @param _verbose

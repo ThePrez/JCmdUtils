@@ -48,7 +48,7 @@ public class ConsoleQuestionAsker {
      * Ask a question for whick the answer is a simple boolean
      *
      * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <tt>null</tt> if no default response. 
+     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
      * @param _fmt a format string (see {@link Formatter}
      * @param _args the arguments to the format string
      * @return the user response as a boolean
@@ -86,7 +86,7 @@ public class ConsoleQuestionAsker {
      * Ask a question for whick the answer is a simple integer
      *
      * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <tt>null</tt> if no default response. 
+     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
      * @param _fmt a format string (see {@link Formatter}
      * @param _args the arguments to the format string
      * @return the user response
@@ -121,7 +121,7 @@ public class ConsoleQuestionAsker {
      * Ask a question for which an empty string is not a valid response. Will keep asking until a non-empty user response is achieved.
      *
      * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <tt>null</tt> if no default response. 
+     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
      * @param _fmt a format string (see {@link Formatter}
      * @param _args the arguments to the format string
      * @return the user response
@@ -145,7 +145,7 @@ public class ConsoleQuestionAsker {
      * Ask a question for which the response must satisfy the given regular expression. 
      *
      * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <tt>null</tt> if no default response. 
+     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
      * @param _regex the regex
      * @param _regexDesc the description, shown to the user, of the criteria
      * @param _fmt a format string (see {@link Formatter}
@@ -166,7 +166,7 @@ public class ConsoleQuestionAsker {
      * Ask a question.
      *
      * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <tt>null</tt> if no default response. 
+     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
      * @param _fmt a format string (see {@link Formatter}
      * @param _args the arguments to the format string
      * @return the user response
