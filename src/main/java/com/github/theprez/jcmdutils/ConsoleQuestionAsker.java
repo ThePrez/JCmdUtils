@@ -180,7 +180,7 @@ public class ConsoleQuestionAsker {
     }
 
     /**
-     * Ask a question. This is different from {@link #askStringQuestion(AppLogger, String, String, Object...) as it lacks the ability to use printf-style formatting
+     * Ask a question. This is different from {@link #askStringQuestion(AppLogger, String, String, Object...)} as it lacks the ability to use printf-style formatting
      * or to have a default response.
      *
      * @param _question the question
@@ -222,7 +222,7 @@ public class ConsoleQuestionAsker {
 
     /**
      * Ask user or throw an {@link IOException} if the user didn't provide a non-empty response. 
-     * This is different from {@link #askStringQuestion(AppLogger, String, String, Object...) as it lacks the ability to use printf-style formatting
+     * This is different from {@link #askStringQuestion(AppLogger, String, String, Object...)} as it lacks the ability to use printf-style formatting
      * or to have a default response.
      *
      * @param _question the question
