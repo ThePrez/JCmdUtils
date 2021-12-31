@@ -154,6 +154,27 @@ public class ConsoleQuestionAsker {
      */
     public String askStringMatchingRegexQuestion(final AppLogger _logger, final String _dft, final String _regex, final String _regexDesc, final String _fmt, final Object... _args) {
         while (true) {
+            final String response = askStringQuestion(_logger, _dft, _fmt, _args);
+            if (response.matches(_regex)) {
+                return response;
+            }
+            _logger.printfln_err("User response does not match criteria. Must be '%s'.", _regexDesc);
+        }
+    }
+
+    /**
+     * Ask a question for which the response must satisfy the given regular expression and the response must not be empty. 
+     *
+     * @param _logger the logger
+     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
+     * @param _regex the regex
+     * @param _regexDesc the description, shown to the user, of the criteria
+     * @param _fmt a format string (see {@link Formatter}
+     * @param _args the arguments to the format string
+     * @return the user response
+     */
+    public String askNonEmpyStringMatchingRegexQuestion(final AppLogger _logger, final String _dft, final String _regex, final String _regexDesc, final String _fmt, final Object... _args) {
+        while (true) {
             final String response = askNonEmptyStringQuestion(_logger, _dft, _fmt, _args);
             if (response.matches(_regex)) {
                 return response;
