@@ -92,7 +92,7 @@ public class ConsoleQuestionAsker {
      * @return the user response
      */
     public int askIntQuestion(final AppLogger _logger, final Integer _dft, final String _fmt, final Object... _args) {
-        return Integer.valueOf(askStringMatchingRegexQuestion(_logger, (null == _dft ? null : "" + _dft), "^[0-9]+$", "an integer value", _fmt, _args));
+        return Integer.valueOf(askNonEmpyStringMatchingRegexQuestion(_logger, (null == _dft ? null : "" + _dft), "^[0-9]+$", "an integer value", _fmt, _args));
     }
 
     /**
