@@ -105,7 +105,7 @@ public class ConsoleQuestionAsker {
      */
     public List<String> askListOfStringsQuestion(final AppLogger _logger, final String _q) {
         m_sysConsole.writer().println(_q);
-        m_sysConsole.writer().println("        (press <enter> after each entry, leave blank to entering values)");
+        m_sysConsole.writer().println("        (press <enter> after each entry, leave blank to finish entering values)");
         final java.util.List<String> ret = new LinkedList<String>();
         for (long i = 1; true; ++i) {
             final String response = readLine("" + i + "> ");
