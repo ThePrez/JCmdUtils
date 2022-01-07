@@ -13,7 +13,6 @@ import java.util.List;
 
 import com.github.theprez.jcmdutils.StringUtils.TerminalColor;
 
-
 /**
  * A utility class for asking the user questions (including passwords). While an object
  * can be directly instantiated, the expected usage is to access functions through a
@@ -22,7 +21,7 @@ import com.github.theprez.jcmdutils.StringUtils.TerminalColor;
 public class ConsoleQuestionAsker {
 
     private static ConsoleQuestionAsker m_singleton = new ConsoleQuestionAsker();
-    
+
     /**
      * Gets the global singleton.
      *
@@ -32,25 +31,66 @@ public class ConsoleQuestionAsker {
         return m_singleton;
     }
 
-    private final Console m_sysConsole;
+    private static class PseudoConsole {
+        private final Console m_cons;
+        private final BufferedReader m_systemInReader;
+
+        public PseudoConsole() {
+            m_cons = System.console();
+            m_systemInReader = null != m_cons ? null : new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String readLine(String _fmt, Object... _args) {
+            if (null == m_cons) {
+                System.out.printf(_fmt, _args);
+                try {
+                    return m_systemInReader.readLine();
+                } catch (IOException e) {
+                    return "";
+                }
+            } else {
+                return m_cons.readLine(_fmt, _args);
+            }
+        }
+
+        public void println(String _s) {
+            if (null == m_cons) {
+                System.out.println(_s);
+            } else {
+                m_cons.writer().println(_s);
+            }
+        }
+
+        public char[] readPassword(String _prompt, Object... _args) throws IOException {
+            if (null == m_cons) {
+                throw new IOException("Can't allocate console for password input");
+            } else {
+                return m_cons.readPassword(_prompt, _args);
+            }
+        }
+
+    }
+
+    private final PseudoConsole m_sysConsole;
 
     /**
      * Instantiates a new console question asker.
      */
     public ConsoleQuestionAsker() {
-        m_sysConsole = System.console();
-        if (null == m_sysConsole) {
-            throw new RuntimeException("ERROR: Unable to allocate console for user input");
-        }
+        m_sysConsole = new PseudoConsole();
     }
 
     /**
      * Ask a question for whick the answer is a simple boolean
      *
-     * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
-     * @param _fmt a format string (see {@link Formatter}
-     * @param _args the arguments to the format string
+     * @param _logger
+     *            the logger
+     * @param _dft
+     *            the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response.
+     * @param _fmt
+     *            a format string (see {@link Formatter}
+     * @param _args
+     *            the arguments to the format string
      * @return the user response as a boolean
      */
     public boolean askBooleanQuestion(final AppLogger _logger, final String _dft, final String _fmt, final Object... _args) {
@@ -61,10 +101,14 @@ public class ConsoleQuestionAsker {
      * Ask a question, for which the response is one of the values of the given enum type class. Will keep asking
      * until user input matches the name of an enum value for the given type.
      *
-     * @param <T> the enum type
-     * @param _logger the logger
-     * @param _question the question
-     * @param _type the type
+     * @param <T>
+     *            the enum type
+     * @param _logger
+     *            the logger
+     * @param _question
+     *            the question
+     * @param _type
+     *            the type
      * @return the user response
      */
     public <T extends Enum<T>> T askEnumQuestion(final AppLogger _logger, final String _question, final Class<T> _type) {
@@ -85,10 +129,14 @@ public class ConsoleQuestionAsker {
     /**
      * Ask a question for whick the answer is a simple integer
      *
-     * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
-     * @param _fmt a format string (see {@link Formatter}
-     * @param _args the arguments to the format string
+     * @param _logger
+     *            the logger
+     * @param _dft
+     *            the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response.
+     * @param _fmt
+     *            a format string (see {@link Formatter}
+     * @param _args
+     *            the arguments to the format string
      * @return the user response
      */
     public int askIntQuestion(final AppLogger _logger, final Integer _dft, final String _fmt, final Object... _args) {
@@ -99,13 +147,15 @@ public class ConsoleQuestionAsker {
      * Ask a question for which the response can be a list of strings. Will keep asking the user for more information
      * until the user indicates the end of input by way of a blank line.
      *
-     * @param _logger the logger
-     * @param _q the question
+     * @param _logger
+     *            the logger
+     * @param _q
+     *            the question
      * @return the user response
      */
     public List<String> askListOfStringsQuestion(final AppLogger _logger, final String _q) {
-        m_sysConsole.writer().println(_q);
-        m_sysConsole.writer().println("        (press <enter> after each entry, leave blank to finish entering values)");
+        m_sysConsole.println(_q);
+        m_sysConsole.println("        (press <enter> after each entry, leave blank to finish entering values)");
         final java.util.List<String> ret = new LinkedList<String>();
         for (long i = 1; true; ++i) {
             final String response = readLine("" + i + "> ");
@@ -120,10 +170,14 @@ public class ConsoleQuestionAsker {
     /**
      * Ask a question for which an empty string is not a valid response. Will keep asking until a non-empty user response is achieved.
      *
-     * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
-     * @param _fmt a format string (see {@link Formatter}
-     * @param _args the arguments to the format string
+     * @param _logger
+     *            the logger
+     * @param _dft
+     *            the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response.
+     * @param _fmt
+     *            a format string (see {@link Formatter}
+     * @param _args
+     *            the arguments to the format string
      * @return the user response
      */
     public String askNonEmptyStringQuestion(final AppLogger _logger, final String _dft, final String _fmt, final Object... _args) {
@@ -142,14 +196,20 @@ public class ConsoleQuestionAsker {
     }
 
     /**
-     * Ask a question for which the response must satisfy the given regular expression. 
+     * Ask a question for which the response must satisfy the given regular expression.
      *
-     * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
-     * @param _regex the regex
-     * @param _regexDesc the description, shown to the user, of the criteria
-     * @param _fmt a format string (see {@link Formatter}
-     * @param _args the arguments to the format string
+     * @param _logger
+     *            the logger
+     * @param _dft
+     *            the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response.
+     * @param _regex
+     *            the regex
+     * @param _regexDesc
+     *            the description, shown to the user, of the criteria
+     * @param _fmt
+     *            a format string (see {@link Formatter}
+     * @param _args
+     *            the arguments to the format string
      * @return the user response
      */
     public String askStringMatchingRegexQuestion(final AppLogger _logger, final String _dft, final String _regex, final String _regexDesc, final String _fmt, final Object... _args) {
@@ -163,14 +223,20 @@ public class ConsoleQuestionAsker {
     }
 
     /**
-     * Ask a question for which the response must satisfy the given regular expression and the response must not be empty. 
+     * Ask a question for which the response must satisfy the given regular expression and the response must not be empty.
      *
-     * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
-     * @param _regex the regex
-     * @param _regexDesc the description, shown to the user, of the criteria
-     * @param _fmt a format string (see {@link Formatter}
-     * @param _args the arguments to the format string
+     * @param _logger
+     *            the logger
+     * @param _dft
+     *            the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response.
+     * @param _regex
+     *            the regex
+     * @param _regexDesc
+     *            the description, shown to the user, of the criteria
+     * @param _fmt
+     *            a format string (see {@link Formatter}
+     * @param _args
+     *            the arguments to the format string
      * @return the user response
      */
     public String askNonEmpyStringMatchingRegexQuestion(final AppLogger _logger, final String _dft, final String _regex, final String _regexDesc, final String _fmt, final Object... _args) {
@@ -186,10 +252,14 @@ public class ConsoleQuestionAsker {
     /**
      * Ask a question.
      *
-     * @param _logger the logger
-     * @param _dft the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response. 
-     * @param _fmt a format string (see {@link Formatter}
-     * @param _args the arguments to the format string
+     * @param _logger
+     *            the logger
+     * @param _dft
+     *            the default response to be used if the user simply presses enter. This can be <code>null</code> if no default response.
+     * @param _fmt
+     *            a format string (see {@link Formatter}
+     * @param _args
+     *            the arguments to the format string
      * @return the user response
      */
     public String askStringQuestion(final AppLogger _logger, final String _dft, final String _fmt, final Object... _args) {
@@ -204,9 +274,11 @@ public class ConsoleQuestionAsker {
      * Ask a question. This is different from {@link #askStringQuestion(AppLogger, String, String, Object...)} as it lacks the ability to use printf-style formatting
      * or to have a default response.
      *
-     * @param _question the question
+     * @param _question
+     *            the question
      * @return the string
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public String askUser(final String _question) throws IOException {
         if (null == m_sysConsole) {
@@ -214,7 +286,7 @@ public class ConsoleQuestionAsker {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
                 return br.readLine();
             } catch (final Exception e) {
-                throw new IOException(e);
+                return null;
             }
         } else {
             return m_sysConsole.readLine("%s", _question);
@@ -225,30 +297,30 @@ public class ConsoleQuestionAsker {
      * Ask user for a password. If the terminal supports password masking, masking will be used. Otherwise,
      * an {@link IOException} will signal that we cannot securely ask for a password.
      *
-     * @param _prompt the prompt
+     * @param _prompt
+     *            the prompt
      * @return the password
-     * @throws IOException if we cannot securely ask for a password, or if user input was empty
+     * @throws IOException
+     *             if we cannot securely ask for a password, or if user input was empty
      */
     public String askUserForPwd(final String _prompt) throws IOException {
-        if (null == m_sysConsole) {
-            throw new IOException("Can't securely ask for password property).");
-        } else {
-            final char[] pw = m_sysConsole.readPassword(_prompt);
-            if (null == pw) {
-                throw new IOException("Password not entered");
-            }
-            return new String(pw);
+        final char[] pw = m_sysConsole.readPassword(_prompt);
+        if (null == pw) {
+            throw new IOException("Password not entered");
         }
+        return new String(pw);
     }
 
     /**
-     * Ask user or throw an {@link IOException} if the user didn't provide a non-empty response. 
+     * Ask user or throw an {@link IOException} if the user didn't provide a non-empty response.
      * This is different from {@link #askStringQuestion(AppLogger, String, String, Object...)} as it lacks the ability to use printf-style formatting
      * or to have a default response.
      *
-     * @param _question the question
+     * @param _question
+     *            the question
      * @return the string
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public String askUserOrThrow(final String _question) throws IOException {
         final String resp = askUser(_question);
@@ -261,10 +333,13 @@ public class ConsoleQuestionAsker {
     /**
      * Ask user with the ability to have a default response.
      *
-     * @param _question the question
-     * @param _default the default
+     * @param _question
+     *            the question
+     * @param _default
+     *            the default
      * @return the user response, or default
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public String askUserWithDefault(final String _question, final String _default) throws IOException {
         final String response = askUser(_question).trim();
@@ -273,9 +348,11 @@ public class ConsoleQuestionAsker {
 
     /**
      * Same as {@link #askUser(String)} except with format args, and the prompt will be formatted green.
+     * 
      * @param _fmt
      * @param _args
      * @return
+     * @throws IOException
      */
     private String readLine(final String _fmt, final Object... _args) {
         return m_sysConsole.readLine(StringUtils.colorizeForTerminal(_fmt, TerminalColor.GREEN), _args);
