@@ -169,7 +169,7 @@ public abstract class AppLogger {
     /**
      * The Interface OutputHandler.
      */
-    private interface OutputHandler {
+    public interface OutputHandler {
 
         /**
          * Printf.
