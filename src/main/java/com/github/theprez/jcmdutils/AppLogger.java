@@ -198,7 +198,8 @@ public abstract class AppLogger {
     /**
      * Gets a global, singleton instance of {@link AppLogger}. The <code>_verbose</code> parameter
      * identifies whether the logger is in verbose mode.
-     * <br><b>IMPORTANT NOTE:</b>
+     * <br>
+     * <b>IMPORTANT NOTE:</b>
      * There is only ever one singleton object returned by this method. The determination of
      * whether that logger is in verbose mode or not depends on the value of <code>_verbose</code>
      * on the very first invocation of this method.
@@ -214,6 +215,8 @@ public abstract class AppLogger {
         }
         return s_singleton = new DefaultLogger(_verbose);
     }
+
+    private boolean m_isWarningsSuppressed = false;
 
     /**
      * Print the exception stack trace
@@ -279,7 +282,7 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will be colorized red if the terminal allows it
+     * <li>Output will be colorized red if the terminal allows it
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -296,8 +299,8 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will be colorized red if the terminal allows it
-     *  <li>Output will only be printed if running in verbose mode
+     * <li>Output will be colorized red if the terminal allows it
+     * <li>Output will only be printed if running in verbose mode
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -317,7 +320,7 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will be colorized green if the terminal allows it
+     * <li>Output will be colorized green if the terminal allows it
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -335,7 +338,7 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will only be printed if running in verbose mode
+     * <li>Output will only be printed if running in verbose mode
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -356,7 +359,7 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will be colorized yellow if the terminal allows it
+     * <li>Output will be colorized yellow if the terminal allows it
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -368,14 +371,16 @@ public abstract class AppLogger {
      *            the args
      */
     public void printf_warn(final String _fmt, final Object... _args) {
-        getErr().printf(StringUtils.colorizeForTerminal(_fmt, TerminalColor.YELLOW), _args);
+        if (isVerbose() || !m_isWarningsSuppressed) {
+            getErr().printf(StringUtils.colorizeForTerminal(_fmt, TerminalColor.YELLOW), _args);
+        }
     }
 
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will be colorized yellow if the terminal allows it
-     *  <li>Output will only be printed if running in verbose mode
+     * <li>Output will be colorized yellow if the terminal allows it
+     * <li>Output will only be printed if running in verbose mode
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -396,7 +401,7 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will automatically have a newline character appended
+     * <li>Output will automatically have a newline character appended
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -414,8 +419,8 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will automatically have a newline character appended
-     *  <li>Output will be colorized red if the terminal allows it
+     * <li>Output will automatically have a newline character appended
+     * <li>Output will be colorized red if the terminal allows it
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -432,9 +437,9 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will automatically have a newline character appended
-     *  <li>Output will be colorized red if the terminal allows it
-     *  <li>Output will only be printed if running in verbose mode
+     * <li>Output will automatically have a newline character appended
+     * <li>Output will be colorized red if the terminal allows it
+     * <li>Output will only be printed if running in verbose mode
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -451,8 +456,8 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will automatically have a newline character appended
-     *  <li>Output will only be printed if running in verbose mode
+     * <li>Output will automatically have a newline character appended
+     * <li>Output will only be printed if running in verbose mode
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -469,8 +474,8 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will automatically have a newline character appended
-     *  <li>Output will be colorized yellow if the terminal allows it
+     * <li>Output will automatically have a newline character appended
+     * <li>Output will be colorized yellow if the terminal allows it
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -487,9 +492,9 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will automatically have a newline character appended
-     *  <li>Output will be colorized yellow if the terminal allows it
-     *  <li>Output will only be printed if running in verbose mode
+     * <li>Output will automatically have a newline character appended
+     * <li>Output will be colorized yellow if the terminal allows it
+     * <li>Output will only be printed if running in verbose mode
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -506,7 +511,7 @@ public abstract class AppLogger {
     /**
      * Classic printf implemenatation, except:
      * <ul>
-     *  <li>Output will automatically have a newline character appended
+     * <li>Output will automatically have a newline character appended
      * </ul>
      * See {@link java.util.Formatter} for information on
      * how to use printf formatting.
@@ -535,7 +540,7 @@ public abstract class AppLogger {
     /**
      * Simply prints a line containing the given string, except:
      * <ul>
-     *  <li>Output will be colorized red if the terminal allows it
+     * <li>Output will be colorized red if the terminal allows it
      * </ul>
      *
      * @param _str
@@ -548,8 +553,8 @@ public abstract class AppLogger {
     /**
      * Simply prints a line containing the given string, except:
      * <ul>
-     *  <li>Output will be colorized red if the terminal allows it
-     *  <li>Output will only be printed if running in verbose mode
+     * <li>Output will be colorized red if the terminal allows it
+     * <li>Output will only be printed if running in verbose mode
      * </ul>
      *
      * @param _msg
@@ -565,8 +570,8 @@ public abstract class AppLogger {
     /**
      * Simply prints a line containing the given string, except:
      * <ul>
-     *  <li>Output will be colorized red if the terminal allows it
-     *  <li>Output will only be printed if running in verbose mode
+     * <li>Output will be colorized red if the terminal allows it
+     * <li>Output will only be printed if running in verbose mode
      * </ul>
      *
      * @param _msg
@@ -579,7 +584,7 @@ public abstract class AppLogger {
     /**
      * Simply prints a line containing the given string, except:
      * <ul>
-     *  <li>Output will only be printed if running in verbose mode
+     * <li>Output will only be printed if running in verbose mode
      * </ul>
      *
      * @param _msg
@@ -595,22 +600,25 @@ public abstract class AppLogger {
     /**
      * Simply prints a line containing the given string, except:
      * <ul>
-     *  <li>Output will be colorized yellow if the terminal allows it
+     * <li>Output will be colorized yellow if the terminal allows it
      * </ul>
      *
      * @param _str
      *            the str
      */
     public void println_warn(final String _str) {
-        getErr().println(StringUtils.colorizeForTerminal(_str, TerminalColor.YELLOW));
+        if (isVerbose() || !m_isWarningsSuppressed) {
+            getErr().println(StringUtils.colorizeForTerminal(_str, TerminalColor.YELLOW));
+        }
     }
 
     /**
      * Simply prints a line containing the given string, except:
      * <ul>
-     *  <li>Output will be colorized yellow if the terminal allows it
-     *  <li>Output will only be printed if running in verbose mode
+     * <li>Output will be colorized yellow if the terminal allows it
+     * <li>Output will only be printed if running in verbose mode
      * </ul>
+     * 
      * @param _msg
      *            the msg
      */
@@ -619,5 +627,10 @@ public abstract class AppLogger {
             return;
         }
         getErr().println(StringUtils.colorizeForTerminal(_msg, TerminalColor.YELLOW));
+    }
+
+    public AppLogger setWarningSuppression(boolean _b) {
+        m_isWarningsSuppressed = _b;
+        return this;
     }
 }
