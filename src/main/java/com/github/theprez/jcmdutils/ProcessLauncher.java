@@ -122,6 +122,42 @@ public class ProcessLauncher {
         }
         return new ProcessResult(stdout, stderr, rc);
     }
+    
+    public static ProcessResult exec(final String... _cmd) throws UnsupportedEncodingException, IOException {
+        final Process p = Runtime.getRuntime().exec(_cmd);
+        final List<String> stdout = new LinkedList<String>();
+        final List<String> stderr = new LinkedList<String>();
+        final Thread stderrThread = new Thread() {
+            @Override
+            public void run() {
+
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream(), "UTF-8"))) {
+                    String line;
+                    while (null != (line = br.readLine())) {
+                        stderr.add(line);
+                    }
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
+            };
+        };
+        stderrThread.setDaemon(true);
+        stderrThread.start();
+        p.getOutputStream().close();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"))) {
+            String line;
+            while (null != (line = br.readLine())) {
+                stdout.add(line);
+            }
+        }
+        int rc;
+        try {
+            rc = p.waitFor();
+        } catch (final InterruptedException e) {
+            throw new IOException(e);
+        }
+        return new ProcessResult(stdout, stderr, rc);
+    }
 
     /**
      * Utility function to run a process and return the stdout. Note that it will also log this info in the {@link AppLogger} instance that is passed in
