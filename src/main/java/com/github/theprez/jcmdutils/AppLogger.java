@@ -74,7 +74,7 @@ public abstract class AppLogger {
          * @see com.github.theprez.jcmdutils.AppLogger#isVerbose()
          */
         @Override
-        protected boolean isVerbose() {
+        public boolean isVerbose() {
             return m_verbose;
         }
     }
@@ -161,7 +161,7 @@ public abstract class AppLogger {
          * @see com.github.theprez.jcmdutils.AppLogger#isVerbose()
          */
         @Override
-        protected boolean isVerbose() {
+        public boolean isVerbose() {
             return m_parent.isVerbose();
         }
     }
@@ -247,7 +247,7 @@ public abstract class AppLogger {
      *
      * @return true, if is verbose
      */
-    protected abstract boolean isVerbose();
+    public abstract boolean isVerbose();
 
     /**
      * Prints the exception stack if running in verbose mode.
